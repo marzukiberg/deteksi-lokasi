@@ -129,9 +129,7 @@
               const city = res.city === "" ? "" : res.city + ", ";
               const provinsi = res.locality === "" ? "" : res.locality + ", ";
               const negara =
-                res.countryName === ""
-                  ? ""
-                  : "Negara " + res.countryName + ", ";
+                res.countryName === "" ? "" : "Negara " + res.countryName;
 
               yourLatitude.innerText = res.latitude;
               yourLongitude.innerText = res.longitude;
