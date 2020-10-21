@@ -44,7 +44,14 @@
           <strong>harap izinkan lokasi anda.</strong>
         </div>
         <div class="mb-3">
-          <span> Lokasi Anda: <b id="your-location">belum terdeteksi</b></span>
+          <span class="d-block"
+            >Latitude: <b id="your-latitude">belum terdeteksi</b></span
+          ><span class="d-block"
+            >Longitude: <b id="your-longitude">belum terdeteksi</b></span
+          >
+          <span class="d-block">
+            Lokasi Anda: <b id="your-location">belum terdeteksi</b></span
+          >
         </div>
         <button
           id="allow-location-button"
@@ -61,6 +68,8 @@
         const allowLocationButton = document.querySelector(
           "#allow-location-button"
         );
+        const yourLatitude = document.querySelector("#your-latitude");
+        const yourLongitude = document.querySelector("#your-longitude");
         const yourLocation = document.querySelector("#your-location");
 
         function isSupportLocation() {
@@ -109,6 +118,8 @@
                   ? ""
                   : "Negara " + res.countryName + ", ";
 
+              yourLatitude.innerText = res.latitude;
+              yourLongitude.innerText = res.longitude;
               yourLocation.innerText = `${city}${provinsi}${negara}`;
             });
         }
