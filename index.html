@@ -45,6 +45,11 @@
         </div>
         <div class="mb-3">
           <span class="d-block"
+            >Lokasi Saya: <b id="my-location">belum terdeteksi</b></span
+          >
+        </div>
+        <div class="mb-3">
+          <span class="d-block"
             >Latitude: <b id="your-latitude">belum terdeteksi</b></span
           ><span class="d-block"
             >Longitude: <b id="your-longitude">belum terdeteksi</b></span
@@ -52,6 +57,11 @@
           <span class="d-block">
             Lokasi Anda: <b id="your-location">belum terdeteksi</b></span
           >
+        </div>
+        <div class="mb-3">
+          <div class="d-block">
+            <span>Jarak kita: <b id="our-distance">belum terdeteksi</b></span>
+          </div>
         </div>
         <button
           id="allow-location-button"
@@ -68,9 +78,14 @@
         const allowLocationButton = document.querySelector(
           "#allow-location-button"
         );
+        const myLocation = document.querySelector("#my-location");
+        const ourDistance = document.querySelector("#our-distance");
         const yourLatitude = document.querySelector("#your-latitude");
         const yourLongitude = document.querySelector("#your-longitude");
         const yourLocation = document.querySelector("#your-location");
+
+        const myLat = "0.47185319";
+        const myLon = "101.40180206";
 
         function isSupportLocation() {
           if (navigator.geolocation) {
@@ -110,7 +125,7 @@
           fetch(apiUrl, { headers: { "Content-Type": "application/json" } })
             .then((res) => res.json())
             .then((res) => {
-              console.log(res);
+              //   console.log(res);
               const city = res.city === "" ? "" : res.city + ", ";
               const provinsi = res.locality === "" ? "" : res.locality + ", ";
               const negara =
@@ -121,7 +136,43 @@
               yourLatitude.innerText = res.latitude;
               yourLongitude.innerText = res.longitude;
               yourLocation.innerText = `${city}${provinsi}${negara}`;
+
+              const userLat = res.latitude;
+              const userLon = res.longitude;
+
+              calculateDistance(userLat, userLon);
             });
+        }
+
+        function calculateDistance(userLat, userLon) {
+          const apiUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${myLat}&longitude=${myLon}&localityLanguage=id`;
+
+          fetch(apiUrl, { headers: { "Content-Type": "application/json" } })
+            .then((res) => res.json())
+            .then((res) => {
+              myLocation.innerText = `${res.locality}, ${res.countryName}`;
+            });
+
+          const R = 6371e3; // metres
+          const φ1 = (userLat * Math.PI) / 180; // φ, λ in radians
+          const φ2 = (myLat * Math.PI) / 180;
+          const Δφ = ((myLat - userLat) * Math.PI) / 180;
+          const Δλ = ((myLon - userLon) * Math.PI) / 180;
+
+          const a =
+            Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+            Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+          const d = R * c; // in metres
+          const distance = d.toFixed(0);
+
+          const distanceInKm = distance / 1000;
+
+          console.log(Intl.NumberFormat().format(distanceInKm) + " kilometer");
+
+          ourDistance.innerText =
+            Intl.NumberFormat().format(distanceInKm) + " kilometer";
         }
 
         isSupportLocation();
