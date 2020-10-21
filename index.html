@@ -102,9 +102,8 @@
             .then((res) => res.json())
             .then((res) => {
               console.log(res);
-              const city = res.city === "" ? "" : "Kota " + res.city + ", ";
-              const provinsi =
-                res.locality === "" ? "" : "Provinsi " + res.locality + ", ";
+              const city = res.city === "" ? "" : res.city + ", ";
+              const provinsi = res.locality === "" ? "" : res.locality + ", ";
               const negara =
                 res.countryName === ""
                   ? ""
